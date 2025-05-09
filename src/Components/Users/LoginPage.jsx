@@ -1,66 +1,66 @@
 import React, { useState } from 'react';
 import { login } from '../Services/UserService';
+import '../CSS/LoginPage.css';
+import logo from '../Image/logo.png'; // adjust the path as needed
 
 const LoginPage = () => {
-  const [credentials, setCredentials] = useState({
-    name: '',
-    userPassword: '',
-  });
+    const [credentials, setCredentials] = useState({
+        name: '',
+        userPassword: '',
+    });
 
-  const [message, setMessage] = useState('');
+    const [message, setMessage] = useState('');
 
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
+    const handleChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      // Call the login function with the credentials
-      const token = await login(credentials); // Expects name and password
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const token = await login(credentials);
+            localStorage.setItem('authToken', token);
+            setMessage('✅ Login successful!');
+        } catch (err) {
+            console.error(err);
+            setMessage('❌ Login failed. Please check your name and password.');
+        }
+    };
 
-      // If successful, save the token to localStorage
-      localStorage.setItem('authToken', token); 
+    return (
+        <div className="login-wrapper">
+            <div className="login-box">
+                <img src={logo} alt="Logo" className="login-logo" />
+                <h2>Login</h2>
+                {message && <div className="login-message">{message}</div>}
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Username"
+                        value={credentials.name}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="password"
+                        name="userPassword"
+                        placeholder="Password"
+                        value={credentials.userPassword}
+                        onChange={handleChange}
+                        required
+                    />
+                    <button type="submit" className='login-btn'>Login</button>
+                </form>
+            </div>
 
-      // Display success message
-      setMessage('✅ Login successful!');
+            <footer className="login-footer">
+                All Rights Reserved Cogent Safety & Security
+            </footer>
+        </div>
 
-      // Optionally, you can redirect the user after successful login
-      // history.push('/dashboard'); // Use this if you are using react-router
 
-    } catch (err) {
-      console.error(err);
-      setMessage('❌ Login failed. Please check your name and password.');
-    }
-  };
-
-  return (
-    <div className="login-container">
-      <div className="login-card">
-        <h2 className="login-title">Login with Name</h2>
-        {message && <div className="login-message">{message}</div>}
-        <form onSubmit={handleSubmit} className="login-form">
-          <input
-            type="text"
-            name="name"
-            placeholder="Username"
-            value={credentials.name}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="userPassword"
-            placeholder="Password"
-            value={credentials.userPassword}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit">Login</button>
-        </form>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default LoginPage;

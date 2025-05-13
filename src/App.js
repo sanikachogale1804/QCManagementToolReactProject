@@ -3,6 +3,7 @@ import './App.css';
 import RegisterPage from './Components/Users/RegisterPage';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from './Components/Users/LoginPage';
+import TicketCreationForm from './Components/Tickets/TicketCreationForm';
 
 const routes= createBrowserRouter([
   {
@@ -12,6 +13,10 @@ const routes= createBrowserRouter([
   {
     path:"/loginPage",
     element:<LoginPage/>
+  },
+  {
+    path:"/ticketCreationForm",
+    element:<TicketCreationForm/>
   }
 ])
 

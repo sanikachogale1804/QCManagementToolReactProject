@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { createTicket } from '../Services/ticketService';
+import '../CSS/TicketCreationForm.css'; // ✅ CSS import
 
 const TicketCreationForm = () => {
-    // State for form fields
     const [formData, setFormData] = useState({
         iasspName: '',
         siteId: '',
-        cameraId: '',
-        ipAddress: '',
+        cameraId1: '',
+        cameraId2: '',
+        ipAddress1: '',
+        ipAddress2: '',
         simIccid: '',
         simCarrier: '',
         simStatus: '',
@@ -15,7 +17,6 @@ const TicketCreationForm = () => {
 
     const [errors, setErrors] = useState({});
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -24,25 +25,32 @@ const TicketCreationForm = () => {
         }));
     };
 
-    // Validate form data
     const validateForm = () => {
         const newErrors = {};
+
         if (!formData.iasspName) newErrors.iasspName = 'IASSP Name is required.';
         if (!formData.siteId) newErrors.siteId = 'Site ID is required.';
-        if (!formData.cameraId) newErrors.cameraId = 'Camera ID is required.';
-        if (!formData.ipAddress || !/\b(?:\d{1,3}\.){3}\d{1,3}\b/.test(formData.ipAddress)) {
-            newErrors.ipAddress = 'Valid IP Address is required.';
+        if (!formData.cameraId1) newErrors.cameraId1 = 'Camera ID 1 is required.';
+        if (!formData.cameraId2) newErrors.cameraId2 = 'Camera ID 2 is required.';
+
+        const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/;
+        if (!formData.ipAddress1 || !ipRegex.test(formData.ipAddress1)) {
+            newErrors.ipAddress1 = 'Valid IP Address 1 is required.';
         }
+        if (!formData.ipAddress2 || !ipRegex.test(formData.ipAddress2)) {
+            newErrors.ipAddress2 = 'Valid IP Address 2 is required.';
+        }
+
         if (!formData.simIccid) newErrors.simIccid = 'SIM ICCID is required.';
         if (!formData.simCarrier) newErrors.simCarrier = 'SIM Carrier is required.';
         if (!formData.simStatus) newErrors.simStatus = 'SIM Status is required.';
+
         return newErrors;
     };
 
-    // Handle form submission
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -53,21 +61,26 @@ const TicketCreationForm = () => {
                 setFormData({
                     iasspName: '',
                     siteId: '',
-                    cameraId: '',
-                    ipAddress: '',
+                    cameraId1: '',
+                    cameraId2: '',
+                    ipAddress1: '',
+                    ipAddress2: '',
                     simIccid: '',
                     simCarrier: '',
                     simStatus: '',
                 });
                 setErrors({});
             } catch (error) {
-                alert('Failed to submit ticket. Please check the console for details.');
+                console.error(error);
+                alert('Failed to submit ticket. Please try again.');
             }
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="ticket-form">
+            <h2>Create Ticket</h2>
+
             <div>
                 <label htmlFor="iasspName">IASSP Name</label>
                 <select
@@ -77,9 +90,12 @@ const TicketCreationForm = () => {
                     onChange={handleChange}
                 >
                     <option value="">Select IASSP</option>
-                    <option value="IASSP 1">IASSP 1</option>
-                    <option value="IASSP 2">IASSP 2</option>
-                    <option value="IASSP 3">IASSP 3</option>
+                    <option value="Skipper Limited">Skipper Limited</option>
+                    <option value="Dinesh Engineers Limited">Dinesh Engineers Limited</option>
+                    <option value="NexGen Digital Infrastructure">NexGen Digital Infrastructure</option>
+                    <option value="Bondada Engineering Limited">Bondada Engineering Limited</option>
+                    <option value="Pace Digitek">Pace Digitek</option>
+                    <option value="Pratap Technocrats Pvt Ltd">Pratap Technocrats Pvt Ltd</option>
                 </select>
                 {errors.iasspName && <p>{errors.iasspName}</p>}
             </div>
@@ -97,27 +113,50 @@ const TicketCreationForm = () => {
             </div>
 
             <div>
-                <label htmlFor="cameraId">Camera ID</label>
+                <label htmlFor="cameraId1">Camera ID 1</label>
                 <input
                     type="text"
-                    id="cameraId"
-                    name="cameraId"
-                    value={formData.cameraId}
+                    id="cameraId1"
+                    name="cameraId1"
+                    value={formData.cameraId1}
                     onChange={handleChange}
                 />
-                {errors.cameraId && <p>{errors.cameraId}</p>}
+                {errors.cameraId1 && <p>{errors.cameraId1}</p>}
+            </div>
+            <div>
+                <label htmlFor="cameraId2">Camera ID 2</label>
+                <input
+                    type="text"
+                    id="cameraId2"
+                    name="cameraId2"
+                    value={formData.cameraId2}
+                    onChange={handleChange}
+                />
+                {errors.cameraId2 && <p>{errors.cameraId2}</p>}
             </div>
 
             <div>
-                <label htmlFor="ipAddress">IP Address</label>
+                <label htmlFor="ipAddress1">IP Address 1</label>
                 <input
                     type="text"
-                    id="ipAddress"
-                    name="ipAddress"
-                    value={formData.ipAddress}
+                    id="ipAddress1"
+                    name="ipAddress1"
+                    value={formData.ipAddress1}
                     onChange={handleChange}
                 />
-                {errors.ipAddress && <p>{errors.ipAddress}</p>}
+                {errors.ipAddress1 && <p>{errors.ipAddress1}</p>}
+            </div>
+
+            <div>
+                <label htmlFor="ipAddress2">IP Address 2</label>
+                <input
+                    type="text"
+                    id="ipAddress2"
+                    name="ipAddress2"
+                    value={formData.ipAddress2}
+                    onChange={handleChange}
+                />
+                {errors.ipAddress2 && <p>{errors.ipAddress2}</p>}
             </div>
 
             <div>

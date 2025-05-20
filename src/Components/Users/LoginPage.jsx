@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { login } from '../Services/UserService';
 import '../CSS/LoginPage.css';
-import logo from '../Image/logo.png'; // adjust the path as needed
+import logo from '../Image/logo.png';
+import { useNavigate } from 'react-router-dom'; // 👈 Import useNavigate
 
 const LoginPage = () => {
     const [credentials, setCredentials] = useState({
         name: '',
         userPassword: '',
     });
-
     const [message, setMessage] = useState('');
+    const navigate = useNavigate(); // 👈 Initialize navigation
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -21,6 +22,7 @@ const LoginPage = () => {
             const token = await login(credentials);
             localStorage.setItem('authToken', token);
             setMessage('✅ Login successful!');
+            navigate('/ticketCreationForm'); // 👈 Redirect to TicketCreationForm
         } catch (err) {
             console.error(err);
             setMessage('❌ Login failed. Please check your name and password.');
@@ -58,8 +60,6 @@ const LoginPage = () => {
                 All Rights Reserved Cogent Safety & Security
             </footer>
         </div>
-
-
     );
 };
 

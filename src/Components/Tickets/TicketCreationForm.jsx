@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
-import { createTicket } from '../Services/ticketService';
+import React, { useEffect, useState } from 'react';
+import { createTicket, uploadNetworkImage } from '../Services/ticketService';
 import '../CSS/TicketCreationForm.css'; // ✅ CSS import
+import { useNavigate } from 'react-router-dom';
+
+const API_BASE_URL = 'http://localhost:8080';
+
 
 const TicketCreationForm = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Please login first');
+            navigate('/loginPage');
+        }
+    }, []);
     const [formData, setFormData] = useState({
         iasspName: '',
         siteId: '',
@@ -13,7 +26,11 @@ const TicketCreationForm = () => {
         simIccid: '',
         simCarrier: '',
         simStatus: '',
+        pingResponseTime: '', // ✅ Added here
     });
+
+    const [networkImage, setNetworkImage] = useState(null);
+
 
     const [errors, setErrors] = useState({});
 
@@ -44,6 +61,10 @@ const TicketCreationForm = () => {
         if (!formData.simIccid) newErrors.simIccid = 'SIM ICCID is required.';
         if (!formData.simCarrier) newErrors.simCarrier = 'SIM Carrier is required.';
         if (!formData.simStatus) newErrors.simStatus = 'SIM Status is required.';
+        if (!formData.pingResponseTime) {
+            newErrors.pingResponseTime = 'Ping Response Time is required.';
+        }
+
 
         return newErrors;
     };
@@ -56,8 +77,19 @@ const TicketCreationForm = () => {
             setErrors(validationErrors);
         } else {
             try {
-                await createTicket(formData);
+                const createdTicket = await createTicket(formData); // create ticket first
+
+                // ✅ If image is selected, upload it
+                if (networkImage) {
+                    await uploadNetworkImage(
+                        `${API_BASE_URL}/ticketCreation/${createdTicket.id}`,
+                        networkImage
+                    );
+
+                }
+
                 alert('Ticket submitted successfully!');
+                // Reset form
                 setFormData({
                     iasspName: '',
                     siteId: '',
@@ -68,7 +100,9 @@ const TicketCreationForm = () => {
                     simIccid: '',
                     simCarrier: '',
                     simStatus: '',
+                    pingResponseTime: '', // ✅ Added here
                 });
+                setNetworkImage(null);
                 setErrors({});
             } catch (error) {
                 console.error(error);
@@ -76,6 +110,7 @@ const TicketCreationForm = () => {
             }
         }
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="ticket-form">
@@ -194,6 +229,100 @@ const TicketCreationForm = () => {
                 />
                 {errors.simStatus && <p>{errors.simStatus}</p>}
             </div>
+
+            <div>
+                <label htmlFor="pingResponseTime">Ping Response Time (ms)</label>
+                <input
+                    type="text"
+                    id="pingResponseTime"
+                    name="pingResponseTime"
+                    value={formData.pingResponseTime}
+                    onChange={handleChange}
+                />
+            </div>
+
+            <div>
+                <label htmlFor="networkImage">Upload Network Image</label>
+                <input
+                    type="file"
+                    id="networkImage"
+                    accept="image/*"
+                    onChange={(e) => setNetworkImage(e.target.files[0])}
+                />
+            </div>
+            <label htmlFor="apnScreenshot">APN Settings Screenshot</label>
+            <input
+                type="file"
+                id="apnScreenshot"
+                accept="image/*"
+
+            />
+
+            <label htmlFor="apnStatus">APN Status</label>
+            <select
+                id="apnStatus"
+                name="apnStatus"
+                value={formData.apnStatus}
+                onChange={handleChange}
+            >
+                <option value="">Select Status</option>
+                <option value="Correct">Correct</option>
+                <option value="Incorrect">Incorrect</option>
+            </select>
+            {errors.apnStatus && <p>{errors.apnStatus}</p>}
+
+            <label htmlFor="liveViewImage">Upload Live Feed Image</label>
+            <input
+                type="file"
+                id="liveViewImage"
+                accept="image/*"
+                onChange={(e) => setFormData({ ...formData, liveViewImage: e.target.files[0] })}
+            />
+
+            <label htmlFor="liveViewQuality">Quality Rating</label>
+            <select
+                id="liveViewQuality"
+                name="liveViewQuality"
+                value={formData.liveViewQuality || ''}
+                onChange={handleChange}
+            >
+                <option value="">Select Quality</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+            </select>
+
+            <label htmlFor="configScreenshot">Upload Config Screenshot</label>
+            <input
+                type="file"
+                id="configScreenshot"
+                accept="image/*"
+                onChange={(e) => setFormData({ ...formData, configScreenshot: e.target.files[0] })}
+            />
+
+            <div>
+                <button type="button" onClick={() => alert('Testing FTP...')}>Test FTP</button>
+                <button type="button" onClick={() => alert('Testing NTP...')}>Test NTP</button>
+            </div>
+
+            <label htmlFor="sdCardStorage">Storage % Used</label>
+            <input
+                type="number"
+                id="sdCardStorage"
+                name="sdCardStorage"
+                value={formData.sdCardStorage || ''}
+                onChange={handleChange}
+                placeholder="e.g. 75"
+            />
+
+            <label htmlFor="sdPlaybackImage">Upload Playback Screenshot</label>
+            <input
+                type="file"
+                id="sdPlaybackImage"
+                accept="image/*"
+                onChange={(e) => setFormData({ ...formData, sdPlaybackImage: e.target.files[0] })}
+            />
+
 
             <div>
                 <button type="submit">Submit Ticket</button>

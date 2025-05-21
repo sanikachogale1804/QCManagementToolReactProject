@@ -26,7 +26,7 @@ const TicketCreationForm = () => {
         simIccid: '',
         simCarrier: '',
         simStatus: '',
-        pingResponseTime: '', // ✅ Added here
+        pingResponseTime: '', 
     });
 
     const [networkImage, setNetworkImage] = useState(null);

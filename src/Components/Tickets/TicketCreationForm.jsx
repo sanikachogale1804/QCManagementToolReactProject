@@ -26,7 +26,7 @@ const TicketCreationForm = () => {
         simIccid: '',
         simCarrier: '',
         simStatus: '',
-        pingResponseTime: '', 
+        pingResponseTime: '',
     });
 
     const [networkImage, setNetworkImage] = useState(null);
@@ -72,42 +72,58 @@ const TicketCreationForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validate form
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
-        } else {
-            try {
-                const createdTicket = await createTicket(formData); // create ticket first
+            return;
+        }
 
-                // ✅ If image is selected, upload it
-                if (networkImage) {
-                    await uploadNetworkImage(
-                        `${API_BASE_URL}/ticketCreation/${createdTicket.id}`,
-                        networkImage
-                    );
+        try {
+            // Create ticket and get the created ticket object
+            const createdTicket = await createTicket(formData);
 
-                }
-
-                alert('Ticket submitted successfully!');
-                // Reset form
-                setFormData({
-                    iasspName: '',
-                    siteId: '',
-                    cameraId1: '',
-                    cameraId2: '',
-                    ipAddress1: '',
-                    ipAddress2: '',
-                    simIccid: '',
-                    simCarrier: '',
-                    simStatus: '',
-                    pingResponseTime: '', // ✅ Added here
-                });
-                setNetworkImage(null);
-                setErrors({});
-            } catch (error) {
-                console.error(error);
-                alert('Failed to submit ticket. Please try again.');
+            // Extract ticket ID from _links.self.href
+            const selfLink = createdTicket?._links?.self?.href;
+            let ticketId = null;
+            if (selfLink) {
+                const parts = selfLink.split('/');
+                ticketId = parts[parts.length - 1];
             }
+
+            if (!ticketId) {
+                throw new Error("Ticket ID not returned from backend");
+            }
+
+            // Upload networkImage if present
+            if (networkImage) {
+                const data = new FormData();
+                data.append('file', networkImage);
+                await uploadNetworkImage(ticketId, data);
+            }
+
+            alert("Ticket submitted successfully!");
+
+            // Reset form and states
+            setFormData({
+                iasspName: '',
+                siteId: '',
+                cameraId1: '',
+                cameraId2: '',
+                ipAddress1: '',
+                ipAddress2: '',
+                simIccid: '',
+                simCarrier: '',
+                simStatus: '',
+                pingResponseTime: '',
+            });
+            setNetworkImage(null);
+            setErrors({});
+
+        } catch (error) {
+            console.error("Error submitting ticket:", error);
+            alert("Failed to submit ticket. Please try again.");
         }
     };
 
@@ -250,7 +266,7 @@ const TicketCreationForm = () => {
                     onChange={(e) => setNetworkImage(e.target.files[0])}
                 />
             </div>
-            <label htmlFor="apnScreenshot">APN Settings Screenshot</label>
+            {/* <label htmlFor="apnScreenshot">APN Settings Screenshot</label>
             <input
                 type="file"
                 id="apnScreenshot"
@@ -321,7 +337,7 @@ const TicketCreationForm = () => {
                 id="sdPlaybackImage"
                 accept="image/*"
                 onChange={(e) => setFormData({ ...formData, sdPlaybackImage: e.target.files[0] })}
-            />
+            /> */}
 
 
             <div>

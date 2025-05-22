@@ -1,41 +1,63 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080';
+// Create a central Axios instance with token auto-injection
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:8080',
+});
 
-const getAuthHeader = () => {
-    const token = localStorage.getItem('token'); // adjust if you store token elsewhere
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
+axiosInstance.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  console.log('Token being sent:', token); // 👈 Debug here
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 
 export const createTicket = async (ticketData) => {
-    try {
-        const response = await axios.post(`${API_BASE_URL}/ticketCreation`, ticketData, {
-            headers: {
-                'Content-Type': 'application/json',
-                ...getAuthHeader(),
-            },
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error creating ticket:', error);
-        throw new Error('Ticket creation failed');
-    }
+  const response = await fetch("http://localhost:8080/ticketCreation", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify(ticketData),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create ticket");
+  }
+
+  const createdTicket = await response.json();
+
+  const selfLink = createdTicket?._links?.self?.href;
+  let ticketId = null;
+
+  if (selfLink) {
+    const parts = selfLink.split('/');
+    ticketId = parts[parts.length - 1];
+  }
+
+  if (!ticketId) {
+    throw new Error("Ticket ID not returned from backend");
+  }
+
+  return { ...createdTicket, id: ticketId };
 };
 
-export const uploadNetworkImage = async (url, imageFile) => {
-    const formData = new FormData();
-    formData.append('image', imageFile);
 
-    try {
-        const response = await axios.post(url, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                ...getAuthHeader(),
-            },
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Image upload failed:', error);
-        throw new Error('Image upload failed');
-    }
+export const uploadNetworkImage = async (ticketId, formData) => {
+  try {
+    const response = await axiosInstance.post(`/ticketCreation/${ticketId}/image`, formData, {
+      headers: {
+        // Let axios set Content-Type automatically for FormData
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Image upload error:", error.response || error.message);
+    throw new Error("Image upload failed");
+  }
 };
+export default axiosInstance;

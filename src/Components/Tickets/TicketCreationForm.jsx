@@ -3,8 +3,6 @@ import { createTicket, uploadNetworkImage } from '../Services/ticketService';
 import '../CSS/TicketCreationForm.css'; // ✅ CSS import
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE_URL = 'http://localhost:8080';
-
 
 const TicketCreationForm = () => {
     const navigate = useNavigate();
@@ -72,61 +70,46 @@ const TicketCreationForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Validate form
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
-            return;
-        }
+        } else {
+            try {
+                // Step 1: Create the ticket
+                const createdTicket = await createTicket(formData); // contains `id` field
 
-        try {
-            // Create ticket and get the created ticket object
-            const createdTicket = await createTicket(formData);
+                // Step 2: If image is selected, upload it
+                if (networkImage) {
+                    const imageFormData = new FormData();
+                    imageFormData.append("file", networkImage); // 👈 make sure this matches backend
 
-            // Extract ticket ID from _links.self.href
-            const selfLink = createdTicket?._links?.self?.href;
-            let ticketId = null;
-            if (selfLink) {
-                const parts = selfLink.split('/');
-                ticketId = parts[parts.length - 1];
+                    // Use the correct ticket ID only (not full URL)
+                    await uploadNetworkImage(createdTicket.id, imageFormData);
+                }
+
+                alert("Ticket submitted successfully!");
+
+                // Step 3: Reset the form
+                setFormData({
+                    iasspName: '',
+                    siteId: '',
+                    cameraId1: '',
+                    cameraId2: '',
+                    ipAddress1: '',
+                    ipAddress2: '',
+                    simIccid: '',
+                    simCarrier: '',
+                    simStatus: '',
+                    pingResponseTime: '',
+                });
+                setNetworkImage(null);
+                setErrors({});
+            } catch (error) {
+                console.error("Ticket submission error:", error);
+                alert("Failed to submit ticket. Please try again.");
             }
-
-            if (!ticketId) {
-                throw new Error("Ticket ID not returned from backend");
-            }
-
-            // Upload networkImage if present
-            if (networkImage) {
-                const data = new FormData();
-                data.append('file', networkImage);
-                await uploadNetworkImage(ticketId, data);
-            }
-
-            alert("Ticket submitted successfully!");
-
-            // Reset form and states
-            setFormData({
-                iasspName: '',
-                siteId: '',
-                cameraId1: '',
-                cameraId2: '',
-                ipAddress1: '',
-                ipAddress2: '',
-                simIccid: '',
-                simCarrier: '',
-                simStatus: '',
-                pingResponseTime: '',
-            });
-            setNetworkImage(null);
-            setErrors({});
-
-        } catch (error) {
-            console.error("Error submitting ticket:", error);
-            alert("Failed to submit ticket. Please try again.");
         }
     };
-
 
     return (
         <form onSubmit={handleSubmit} className="ticket-form">
@@ -266,79 +249,6 @@ const TicketCreationForm = () => {
                     onChange={(e) => setNetworkImage(e.target.files[0])}
                 />
             </div>
-            {/* <label htmlFor="apnScreenshot">APN Settings Screenshot</label>
-            <input
-                type="file"
-                id="apnScreenshot"
-                accept="image/*"
-
-            />
-
-            <label htmlFor="apnStatus">APN Status</label>
-            <select
-                id="apnStatus"
-                name="apnStatus"
-                value={formData.apnStatus}
-                onChange={handleChange}
-            >
-                <option value="">Select Status</option>
-                <option value="Correct">Correct</option>
-                <option value="Incorrect">Incorrect</option>
-            </select>
-            {errors.apnStatus && <p>{errors.apnStatus}</p>}
-
-            <label htmlFor="liveViewImage">Upload Live Feed Image</label>
-            <input
-                type="file"
-                id="liveViewImage"
-                accept="image/*"
-                onChange={(e) => setFormData({ ...formData, liveViewImage: e.target.files[0] })}
-            />
-
-            <label htmlFor="liveViewQuality">Quality Rating</label>
-            <select
-                id="liveViewQuality"
-                name="liveViewQuality"
-                value={formData.liveViewQuality || ''}
-                onChange={handleChange}
-            >
-                <option value="">Select Quality</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-                <option value="Poor">Poor</option>
-            </select>
-
-            <label htmlFor="configScreenshot">Upload Config Screenshot</label>
-            <input
-                type="file"
-                id="configScreenshot"
-                accept="image/*"
-                onChange={(e) => setFormData({ ...formData, configScreenshot: e.target.files[0] })}
-            />
-
-            <div>
-                <button type="button" onClick={() => alert('Testing FTP...')}>Test FTP</button>
-                <button type="button" onClick={() => alert('Testing NTP...')}>Test NTP</button>
-            </div>
-
-            <label htmlFor="sdCardStorage">Storage % Used</label>
-            <input
-                type="number"
-                id="sdCardStorage"
-                name="sdCardStorage"
-                value={formData.sdCardStorage || ''}
-                onChange={handleChange}
-                placeholder="e.g. 75"
-            />
-
-            <label htmlFor="sdPlaybackImage">Upload Playback Screenshot</label>
-            <input
-                type="file"
-                id="sdPlaybackImage"
-                accept="image/*"
-                onChange={(e) => setFormData({ ...formData, sdPlaybackImage: e.target.files[0] })}
-            /> */}
-
 
             <div>
                 <button type="submit">Submit Ticket</button>

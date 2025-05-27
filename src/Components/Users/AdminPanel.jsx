@@ -3,14 +3,16 @@ import { getTickets } from '../Services/ticketService';
 
 function AdminPanel() {
   const [tickets, setTickets] = useState([]);
+  const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
         const data = await getTickets();
         if (data._embedded && data._embedded.ticketCreations) {
-          setTickets(data._embedded.ticketCreations);
-          console.log('✅ Tickets loaded:', data._embedded.ticketCreations);
+          const ticketData = data._embedded.ticketCreations;
+          setTickets(sortTickets(ticketData, sortOrder));
+          console.log('✅ Tickets loaded:', ticketData);
         } else {
           console.warn('⚠️ No tickets found in response:', data);
           setTickets([]);
@@ -24,9 +26,34 @@ function AdminPanel() {
     fetchTickets();
   }, []);
 
+  const sortTickets = (ticketsList, order) => {
+    return [...ticketsList].sort((a, b) => {
+      return order === 'asc'
+        ? a.siteId.localeCompare(b.siteId)
+        : b.siteId.localeCompare(a.siteId);
+    });
+  };
+
+  const handleSortChange = (e) => {
+    const newOrder = e.target.value;
+    setSortOrder(newOrder);
+    setTickets(sortTickets(tickets, newOrder));
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h2>Admin Panel - Ticket List</h2>
+
+      <div style={{ marginBottom: '15px' }}>
+        <label htmlFor="sortOrder" style={{ marginRight: '10px' }}>
+          Sort by Site ID:
+        </label>
+        <select id="sortOrder" value={sortOrder} onChange={handleSortChange}>
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
+
       {tickets.length === 0 ? (
         <p>No tickets found.</p>
       ) : (

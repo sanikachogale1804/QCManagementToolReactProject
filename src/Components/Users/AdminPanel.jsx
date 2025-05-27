@@ -64,12 +64,28 @@ function AdminPanel() {
               <th>IASSP Name</th>
               <th>Site ID</th>
               <th>Camera ID 1</th>
+              <th>Camera ID 2</th>
+              <th>IP Address 1</th>
+              <th>IP Address2</th>
+              <th>SIM ICCID</th>
               <th>SIM Carrier</th>
+              <th>SIM Status</th>
               <th>Ping Time</th>
+              <th>Network Image</th>
+              <th>APN Configure Image</th>
               <th>APN Status</th>
+              <th>Live View Image</th>
               <th>Live View Quality</th>
+              <th>Video Config Image</th>
+              <th>Resolution</th>
+              <th>FTP Seetings Image</th>
+              <th>NTP Seetings Image</th>
+              <th>SD Card Storage Percentage</th>
+              <th>PlayBack Screenshot</th>
               <th>Final Status</th>
               <th>Remarks</th>
+              <th>Additional Image</th>
+              <th>Validate</th>
             </tr>
           </thead>
           <tbody>
@@ -79,12 +95,30 @@ function AdminPanel() {
                 <td>{ticket.iasspName}</td>
                 <td>{ticket.siteId}</td>
                 <td>{ticket.cameraId1}</td>
+                <td>{ticket.cameraId2}</td>
+                <td>{ticket.ipAddress1}</td>
+                <td>{ticket.ipAddress2}</td>
+                <td>{ticket.simIccid}</td>
                 <td>{ticket.simCarrier}</td>
+                <td>{ticket.simStatus}</td>
                 <td>{ticket.pingResponseTime}</td>
+                <td>{ticket.networkImage}</td>
+                <td>{ticket.apnConfigImage}</td>
                 <td>{ticket.apnConfigStatus}</td>
+                <td>{ticket.liveViewImage}</td>
                 <td>{ticket.liveViewQuality}</td>
+                <td>{ticket.videoConfigImage}</td>
+                <td>{ticket.resolution}</td>
+                <td>{ticket.ftpSettingsImage}</td>
+                <td>{ticket.ntpSettingsImage}</td>
+                <td>{ticket.sdCardStoragePercentage}</td>
+                <td>{ticket.playbackScreenshot}</td>
                 <td>{ticket.finalStatus}</td>
                 <td>{ticket.finalRemarks}</td>
+                <td>{ticket.additionalImages}</td>
+                <td>
+                    <button>Validate</button>
+                </td>
               </tr>
             ))}
           </tbody>

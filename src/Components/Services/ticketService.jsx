@@ -12,6 +12,7 @@ axiosInstance.interceptors.request.use(config => {
   return config;
 });
 
+const BASE_URL="http://localhost:8080"
 export default axiosInstance;
 
 
@@ -62,5 +63,21 @@ export const uploadNetworkImage = async (ticketId, imageFile) => {
   } catch (error) {
     console.error("Image upload error:", error);
     throw new Error('Image upload failed');
+  }
+};
+
+export const getTickets = async () => {
+  try {
+    const response = await axiosInstance.get('/ticketCreation');
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("❌ Error Status:", error.response.status);
+      console.error("❌ Error Data:", error.response.data);
+      console.error("❌ Full Response:", error.response);
+    } else {
+      console.error("❌ Error Message:", error.message);
+    }
+    return [];
   }
 };

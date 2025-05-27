@@ -4,6 +4,7 @@ import RegisterPage from './Components/Users/RegisterPage';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from './Components/Users/LoginPage';
 import TicketCreationForm from './Components/Tickets/TicketCreationForm';
+import AdminPanel from './Components/Users/AdminPanel';
 
 const routes= createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const routes= createBrowserRouter([
   {
     path:"/ticketCreationForm",
     element:<TicketCreationForm/>
+  },
+  {
+    path:"/adminPanel",
+    element:<AdminPanel/>
   }
 ])
 

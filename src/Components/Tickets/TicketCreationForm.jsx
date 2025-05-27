@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createTicket, uploadNetworkImage } from '../Services/ticketService';
-import '../CSS/TicketCreationForm.css'; // ✅ CSS import
+import '../CSS/TicketCreationForm.css'; 
 import { useNavigate } from 'react-router-dom';
 
 
@@ -25,10 +25,17 @@ const TicketCreationForm = () => {
         simCarrier: '',
         simStatus: '',
         pingResponseTime: '',
+        apnConfigImage: '',
+        apnConfigStatus: '',
+        liveViewImage: '',
+        liveViewQuality: '',
+        videoConfigImage: '',
+        resolution: '',
+        sdCardStoragePercentage: '',
+        finalStatus: ''
     });
 
     const [networkImage, setNetworkImage] = useState(null);
-
 
     const [errors, setErrors] = useState({});
 
@@ -101,6 +108,14 @@ const TicketCreationForm = () => {
                     simCarrier: '',
                     simStatus: '',
                     pingResponseTime: '',
+                    apnConfigImage: '',
+                    apnConfigStatus: '',
+                    liveViewImage: '',
+                    liveViewQuality: '',
+                    videoConfigImage: '',
+                    resolution: '',
+                    sdCardStoragePercentage: '',
+                    finalStatus: ''
                 });
                 setNetworkImage(null);
                 setErrors({});
@@ -249,6 +264,126 @@ const TicketCreationForm = () => {
                     onChange={(e) => setNetworkImage(e.target.files[0])}
                 />
             </div>
+
+            <div>
+                <label htmlFor="apnConfigImage">APN Config Image</label>
+                <input
+                    type="file"
+                    id="apnConfigImage"
+                    accept="image/*"
+                />
+            </div>
+
+            <div>
+                <label htmlFor="apnConfigStatus">APN Config Status</label>
+                <select
+                    id="apnConfigStatus"
+                    name="apnConfigStatus"
+                    value={formData.apnConfigStatus}
+                    onChange={handleChange}
+                >
+                    <option value="">-- Select Status --</option>
+                    <option value="Correct">Correct</option>
+                    <option value="Incorrect">Incorrect</option>
+                </select>
+            </div>
+
+
+            <div>
+                <label htmlFor="liveViewImage">Live View Image</label>
+                <input
+                    type="file"
+                    id="liveViewImage"
+                    accept="image/*"
+                />
+            </div>
+
+            <div>
+                <label htmlFor="">Live View Quality</label>
+                <input
+                    type="text"
+                    id="liveViewQuality"
+                    name="liveViewQuality"
+                    value={formData.liveViewQuality}
+                    onChange={handleChange}
+                />
+            </div>
+
+            <div>
+                <label htmlFor="videoConfigImage">Video Config Image</label>
+                <input
+                    type="file"
+                    id="videoConfigImage"
+                    accept="image/*"
+                />
+            </div>
+
+            <div>
+                <label htmlFor="resolution">Resolution</label>
+                <input
+                    type="text"
+                    id="resolution"
+                    name="resolution"
+                    value={formData.resolution}
+                    onChange={handleChange}
+                />
+            </div>
+
+            <div>
+                <label htmlFor="ftpSettingsImage">FTP Setting Image</label>
+                <input
+                    type="file"
+                    id="ftpSettingsImage"
+                    accept="image/*"
+                />
+            </div>
+
+            <div>
+                <label htmlFor="ntpSettingsImage">NTP Setting Image</label>
+                <input
+                    type="file"
+                    id="ntpSettingsImage"
+                    accept="image/*"
+                />
+            </div>
+
+            <div>
+                <label htmlFor="playbackScreenshot">SD Card Playback Screenshot</label>
+                <input
+                    type="file"
+                    id="playbackScreenshot"
+                    accept="image/*"
+                />
+            </div>
+
+            <div>
+                <label htmlFor="sdCardStoragePercentage">SD Card Storage Capacity</label>
+                <input
+                    type="text"
+                    id="sdCardStoragePercentage"
+                    name="sdCardStoragePercentage"
+                    value={formData.sdCardStoragePercentage}
+                    onChange={handleChange}
+                />
+            </div>
+
+            <div>
+                <label htmlFor="finalStatus">Final Status</label>
+                <select
+                    id="finalStatus"
+                    name="finalStatus"
+                    value={formData.finalStatus}
+                    onChange={handleChange}
+                >
+                    <option value="">-- Select Final Status --</option>
+                    <option value="QC completed">QC completed</option>
+                    <option value="SIM issue">SIM issue</option>
+                    <option value="Hardware issue">Hardware issue</option>
+                    <option value="Tower not ready">Tower not ready</option>
+                    <option value="Engineer not on site">Engineer not on site</option>
+                </select>
+            </div>
+
 
             <div>
                 <button type="submit">Submit Ticket</button>

@@ -42,30 +42,28 @@ export const createTicket = async (ticketData) => {
   }
 };
 
-// Upload network image for a ticket (POST /ticketCreation/{ticketId}/image)
-export const uploadNetworkImage = async (ticketId, imageFile) => {
-  const token = localStorage.getItem('token');
-  const formData = new FormData();
-  formData.append('networkImage', imageFile); // key must match backend
 
+export async function uploadNetworkImage(ticketId, networkImage, token) {
   try {
+    const formData = new FormData();
+    formData.append('file', networkImage); // Adjust 'file' if backend expects different key
+
     const response = await axios.post(
       `http://localhost:8080/ticketCreation/${ticketId}/image`,
       formData,
       {
         headers: {
-          Authorization: `Bearer ${token}`, // important
-          // no Content-Type here, axios will set correct multipart boundary
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error("Image upload error:", error);
+    console.error('Image upload failed:', error.response || error.message);
     throw new Error('Image upload failed');
   }
-};
-
+}
 export const getTickets = async () => {
   try {
     const response = await axiosInstance.get('/ticketCreation');

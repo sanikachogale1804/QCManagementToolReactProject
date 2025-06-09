@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createTicket, uploadNetworkImage } from '../Services/ticketService';
-import '../CSS/TicketCreationForm.css'; 
+import '../CSS/TicketCreationForm.css';
 import { useNavigate } from 'react-router-dom';
-
 
 const TicketCreationForm = () => {
     const navigate = useNavigate();
@@ -259,10 +258,10 @@ const TicketCreationForm = () => {
                 <label htmlFor="networkImage">Upload Network Image</label>
                 <input
                     type="file"
-                    id="networkImage"
-                    accept="image/*"
+                    name="networkImage"
                     onChange={(e) => setNetworkImage(e.target.files[0])}
                 />
+
             </div>
 
             <div>

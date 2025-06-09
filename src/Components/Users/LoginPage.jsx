@@ -22,7 +22,7 @@ const LoginPage = () => {
             const token = await login(credentials);
             localStorage.setItem('authToken', token);
             setMessage('✅ Login successful!');
-            navigate('/ticketCreationForm'); // 👈 Redirect to TicketCreationForm
+            navigate('/ticketCreationForm'); 
         } catch (err) {
             console.error(err);
             setMessage('❌ Login failed. Please check your name and password.');

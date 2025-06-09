@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createTicket, uploadApnConfigImage, uploadNetworkImage } from '../Services/ticketService';
+import { createTicket, uploadAdditionalImage, uploadApnConfigImage, uploadFtpConfigImage, uploadLiveViewImage, uploadNetworkImage, uploadNtpConfigImage, uploadPlaybackScreenshotImage, uploadVideoConfigImage } from '../Services/ticketService';
 import '../CSS/TicketCreationForm.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -36,7 +36,12 @@ const TicketCreationForm = () => {
 
     const [networkImage, setNetworkImage] = useState(null);
     const [apnConfigImageFile, setApnConfigImageFile] = useState(null);
-
+    const [liveViewImageFile, setliveViewImageFile] = useState(null);
+    const [videoConfigImageFile, setvideoConfigImageFile] = useState(null);
+    const [ftpSettingsImageFile, setftpSettingsImageFile] = useState(null);
+    const [ntpSettingsImageFile, setntpSettingsImageFile] = useState(null);
+    const [playbackScreenshotImageFile, setplaybackScreenshotImageFile] = useState(null);
+    const [additionalImageFile, setadditionalImageFile] = useState(null);
 
     const [errors, setErrors] = useState({});
 
@@ -102,6 +107,42 @@ const TicketCreationForm = () => {
                 await uploadApnConfigImage(createdTicket.id, apnFormData);
             }
 
+            if (liveViewImageFile) {
+                const apnFormData = new FormData();
+                apnFormData.append("liveViewImage", liveViewImageFile);
+                await uploadLiveViewImage(createdTicket.id, apnFormData);
+            }
+
+            if (videoConfigImageFile) {
+                const apnFormData = new FormData();
+                apnFormData.append("videoConfigImage", videoConfigImageFile);
+                await uploadVideoConfigImage(createdTicket.id, apnFormData);
+            }
+
+            if (ftpSettingsImageFile) {
+                const apnFormData = new FormData();
+                apnFormData.append("ftpSettingsImage", ftpSettingsImageFile);
+                await uploadFtpConfigImage(createdTicket.id, apnFormData);
+            }
+
+            if (ntpSettingsImageFile) {
+                const apnFormData = new FormData();
+                apnFormData.append("ntpSettingsImage", ntpSettingsImageFile);
+                await uploadNtpConfigImage(createdTicket.id, apnFormData);
+            }
+
+            if (playbackScreenshotImageFile) {
+                const apnFormData = new FormData();
+                apnFormData.append("playbackScreenshotImage", playbackScreenshotImageFile);
+                await uploadPlaybackScreenshotImage(createdTicket.id, apnFormData);
+            }
+
+            if (additionalImageFile) {
+                const apnFormData = new FormData();
+                apnFormData.append("additionalImage", additionalImageFile);
+                await uploadAdditionalImage(createdTicket.id, apnFormData);
+            }
+
             alert("Ticket submitted successfully!");
 
             // Reset form and images
@@ -127,6 +168,7 @@ const TicketCreationForm = () => {
             });
             setNetworkImage(null);
             setApnConfigImageFile(null);
+            setvideoConfigImageFile(null);
             setErrors({});
         } catch (error) {
             console.error("Ticket submission error:", error);
@@ -306,7 +348,9 @@ const TicketCreationForm = () => {
                 <input
                     type="file"
                     id="liveViewImage"
+                    name="liveViewImage"
                     accept="image/*"
+                    onChange={(e) => setliveViewImageFile(e.target.files[0])}
                 />
             </div>
 
@@ -326,7 +370,9 @@ const TicketCreationForm = () => {
                 <input
                     type="file"
                     id="videoConfigImage"
+                    name="videoConfigImage"
                     accept="image/*"
+                    onChange={(e) => setvideoConfigImageFile(e.target.files[0])}
                 />
             </div>
 
@@ -346,7 +392,9 @@ const TicketCreationForm = () => {
                 <input
                     type="file"
                     id="ftpSettingsImage"
+                    name="ftpSettingsImage"
                     accept="image/*"
+                    onChange={(e) => setftpSettingsImageFile(e.target.files[0])}
                 />
             </div>
 
@@ -355,16 +403,20 @@ const TicketCreationForm = () => {
                 <input
                     type="file"
                     id="ntpSettingsImage"
+                    name="ntpSettingsImage"
                     accept="image/*"
+                    onChange={(e) => setntpSettingsImageFile(e.target.files[0])}
                 />
             </div>
 
             <div>
-                <label htmlFor="playbackScreenshot">SD Card Playback Screenshot</label>
+                <label htmlFor="playbackScreenshotImage">SD Card Playback Screenshot</label>
                 <input
                     type="file"
-                    id="playbackScreenshot"
+                    id="playbackScreenshotImage"
+                    name="playbackScreenshotImage"
                     accept="image/*"
+                    onChange={(e) => setplaybackScreenshotImageFile(e.target.files[0])}
                 />
             </div>
 
@@ -396,6 +448,16 @@ const TicketCreationForm = () => {
                 </select>
             </div>
 
+            <div>
+                <label htmlFor="additionalImage">Additional Image</label>
+                <input
+                    type="file"
+                    id="additionalImage"
+                    name="additionalImage"
+                    accept="image/*"
+                    onChange={(e) => setadditionalImageFile(e.target.files[0])}
+                />
+            </div>
 
             <div>
                 <button type="submit">Submit Ticket</button>

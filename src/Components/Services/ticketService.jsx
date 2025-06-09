@@ -101,5 +101,118 @@ export const uploadApnConfigImage = async (ticketId, imageFormData) => {
     console.log('❌ APN Config Image upload failed:', error);
     throw new Error('APN Config Image upload failed');
   }
+};
 
+export const uploadLiveViewImage = async (ticketId, imageFormData) => {
+  try {
+    const response = await axiosInstance.post(
+      `/ticketCreation/${ticketId}/liveViewImage`,
+      imageFormData,
+      {
+        headers:{
+           // Content-Type will be set automatically by axios for FormData
+          // Authorization handled by axiosInstance interceptor
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('❌ Live View Image upload failed:', error);
+    throw new Error('Live View Image upload failed');
+  }
+};
+
+export const uploadVideoConfigImage = async (ticketId, imageFormData) => {
+  try {
+    const response = await axiosInstance.post(
+      `/ticketCreation/${ticketId}/videoConfigImage`,
+      imageFormData,
+      {
+        headers:{
+           // Content-Type will be set automatically by axios for FormData
+          // Authorization handled by axiosInstance interceptor
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('❌ Live View Image upload failed:', error);
+    throw new Error('Live View Image upload failed');
+  }
+};
+
+export const uploadFtpConfigImage = async (ticketId, imageFormData) => {
+  try {
+    const response = await axiosInstance.post(
+      `/ticketCreation/${ticketId}/ftpSettingsImage`,
+      imageFormData,
+      {
+        headers:{
+           // Content-Type will be set automatically by axios for FormData
+          // Authorization handled by axiosInstance interceptor
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('❌ Live View Image upload failed:', error);
+    throw new Error('Live View Image upload failed');
+  }
+};
+
+export const uploadNtpConfigImage = async (ticketId, imageFormData) => {
+  try {
+    const response = await axiosInstance.post(
+      `/ticketCreation/${ticketId}/ntpSettingsImage`,
+      imageFormData,
+      {
+        headers:{
+           // Content-Type will be set automatically by axios for FormData
+          // Authorization handled by axiosInstance interceptor
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('❌ Live View Image upload failed:', error);
+    throw new Error('Live View Image upload failed');
+  }
+};
+
+export const uploadPlaybackScreenshotImage = async (ticketId, imageFormData) => {
+  try {
+    const response = await axiosInstance.post(
+      `/ticketCreation/${ticketId}/playbackScreenshotImage`,
+      imageFormData,
+      {
+        headers:{
+           // Content-Type will be set automatically by axios for FormData
+          // Authorization handled by axiosInstance interceptor
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('❌ Live View Image upload failed:', error);
+    throw new Error('Live View Image upload failed');
+  }
+};
+
+export const uploadAdditionalImage = async (ticketId, imageFormData) => {
+  try {
+    const response = await axiosInstance.post(
+      `/ticketCreation/${ticketId}/additionalImage`,
+      imageFormData,
+      {
+        headers:{
+           // Content-Type will be set automatically by axios for FormData
+          // Authorization handled by axiosInstance interceptor
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('❌ Live View Image upload failed:', error);
+    throw new Error('Live View Image upload failed');
+  }
 };

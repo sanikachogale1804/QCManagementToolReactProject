@@ -19,6 +19,24 @@ axiosInstance.interceptors.request.use(config => {
 export default axiosInstance;
 
 // -----------------------------
+// ✅ Fetch Tickets (GET /ticketCreation)
+export const getTickets = async () => {
+  try {
+    const response = await axiosInstance.get('/ticketCreation');
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error('❌ Error Status:', error.response.status);
+      console.error('❌ Error Data:', error.response.data);
+    } else {
+      console.error('❌ Error Message:', error.message);
+    }
+    return [];
+  }
+};
+
+
+// -----------------------------
 // ✅ Create Ticket (POST /ticketCreation)
 export const createTicket = async (ticketData) => {
   try {
@@ -66,19 +84,22 @@ export const uploadNetworkImage = async (ticketId, imageFormData) => {
   }
 };
 
-// -----------------------------
-// ✅ Fetch Tickets (GET /ticketCreation)
-export const getTickets = async () => {
+export const uploadApnConfigImage = async (ticketId, imageFormData) => {
   try {
-    const response = await axiosInstance.get('/ticketCreation');
+    const response = await axiosInstance.post(
+      `/ticketCreation/${ticketId}/apnConfigImage`,
+      imageFormData,
+      {
+        headers: {
+          // Content-Type will be set automatically by axios for FormData
+          // Authorization handled by axiosInstance interceptor
+        }
+      }
+    );
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('❌ Error Status:', error.response.status);
-      console.error('❌ Error Data:', error.response.data);
-    } else {
-      console.error('❌ Error Message:', error.message);
-    }
-    return [];
+    console.log('❌ APN Config Image upload failed:', error);
+    throw new Error('APN Config Image upload failed');
   }
+
 };

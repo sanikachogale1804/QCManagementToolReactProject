@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createTicket, uploadNetworkImage } from '../Services/ticketService';
+import { createTicket, uploadApnConfigImage, uploadNetworkImage } from '../Services/ticketService';
 import '../CSS/TicketCreationForm.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,6 +35,8 @@ const TicketCreationForm = () => {
     });
 
     const [networkImage, setNetworkImage] = useState(null);
+    const [apnConfigImageFile, setApnConfigImageFile] = useState(null);
+
 
     const [errors, setErrors] = useState({});
 
@@ -79,51 +81,59 @@ const TicketCreationForm = () => {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
-        } else {
-            try {
-                // Step 1: Create the ticket
-                const createdTicket = await createTicket(formData); // contains `id` field
+            return;
+        }
 
-                // Step 2: If image is selected, upload it
-                if (networkImage) {
-                    const imageFormData = new FormData();
-                    imageFormData.append("networkImage", networkImage); // ✅ this must match backend
+        try {
+            // Step 1: Create ticket
+            const createdTicket = await createTicket(formData);
 
-                    // Use the correct ticket ID only (not full URL)
-                    await uploadNetworkImage(createdTicket.id, imageFormData);
-                }
-
-                alert("Ticket submitted successfully!");
-
-                // Step 3: Reset the form
-                setFormData({
-                    iasspName: '',
-                    siteId: '',
-                    cameraId1: '',
-                    cameraId2: '',
-                    ipAddress1: '',
-                    ipAddress2: '',
-                    simIccid: '',
-                    simCarrier: '',
-                    simStatus: '',
-                    pingResponseTime: '',
-                    apnConfigImage: '',
-                    apnConfigStatus: '',
-                    liveViewImage: '',
-                    liveViewQuality: '',
-                    videoConfigImage: '',
-                    resolution: '',
-                    sdCardStoragePercentage: '',
-                    finalStatus: ''
-                });
-                setNetworkImage(null);
-                setErrors({});
-            } catch (error) {
-                console.error("Ticket submission error:", error);
-                alert("Failed to submit ticket. Please try again.");
+            // Step 2: Upload network image if selected
+            if (networkImage) {
+                const imageFormData = new FormData();
+                imageFormData.append("networkImage", networkImage);
+                await uploadNetworkImage(createdTicket.id, imageFormData);
             }
+
+            // Step 3: Upload APN config image if selected
+            if (apnConfigImageFile) {
+                const apnFormData = new FormData();
+                apnFormData.append("apnConfigImage", apnConfigImageFile);
+                await uploadApnConfigImage(createdTicket.id, apnFormData);
+            }
+
+            alert("Ticket submitted successfully!");
+
+            // Reset form and images
+            setFormData({
+                iasspName: '',
+                siteId: '',
+                cameraId1: '',
+                cameraId2: '',
+                ipAddress1: '',
+                ipAddress2: '',
+                simIccid: '',
+                simCarrier: '',
+                simStatus: '',
+                pingResponseTime: '',
+                apnConfigImage: '',
+                apnConfigStatus: '',
+                liveViewImage: '',
+                liveViewQuality: '',
+                videoConfigImage: '',
+                resolution: '',
+                sdCardStoragePercentage: '',
+                finalStatus: ''
+            });
+            setNetworkImage(null);
+            setApnConfigImageFile(null);
+            setErrors({});
+        } catch (error) {
+            console.error("Ticket submission error:", error);
+            alert("Failed to submit ticket. Please try again.");
         }
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="ticket-form">
@@ -270,7 +280,9 @@ const TicketCreationForm = () => {
                 <input
                     type="file"
                     id="apnConfigImage"
+                    name="apnConfigImage"
                     accept="image/*"
+                    onChange={(e) => setApnConfigImageFile(e.target.files[0])}
                 />
             </div>
 

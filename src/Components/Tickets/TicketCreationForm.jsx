@@ -87,7 +87,7 @@ const TicketCreationForm = () => {
                 // Step 2: If image is selected, upload it
                 if (networkImage) {
                     const imageFormData = new FormData();
-                    imageFormData.append("file", networkImage); // 👈 make sure this matches backend
+                    imageFormData.append("networkImage", networkImage); // ✅ this must match backend
 
                     // Use the correct ticket ID only (not full URL)
                     await uploadNetworkImage(createdTicket.id, imageFormData);
@@ -255,13 +255,14 @@ const TicketCreationForm = () => {
             </div>
 
             <div>
-                <label htmlFor="networkImage">Upload Network Image</label>
+                <label htmlFor="networkImage">Network Image</label>
                 <input
                     type="file"
+                    id="networkImage"
                     name="networkImage"
+                    accept="image/*"
                     onChange={(e) => setNetworkImage(e.target.files[0])}
                 />
-
             </div>
 
             <div>

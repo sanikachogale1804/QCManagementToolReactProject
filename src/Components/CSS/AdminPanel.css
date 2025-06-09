@@ -1,0 +1,66 @@
+/* AdminPanel.css */
+
+.admin-panel-container {
+  padding: 20px;
+  background-color: black;
+  color: white;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.admin-panel-container h2 {
+  margin-bottom: 20px;
+}
+
+.sort-container {
+  margin-bottom: 15px;
+}
+
+.sort-container label {
+  margin-right: 10px;
+}
+
+.sort-container select {
+  background-color: #222;
+  color: white;
+  border: 1px solid #555;
+  padding: 5px;
+}
+
+.ticket-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #111;
+  color: white;
+}
+
+.ticket-table th,
+.ticket-table td {
+  border: 1px solid #444;
+  padding: 8px;
+  text-align: left;
+}
+
+.ticket-table thead {
+  background-color: #333;
+}
+
+.ticket-table tbody tr:hover {
+  background-color: #222;
+}
+
+.validate-button {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.validate-button:hover {
+  background-color: #777;
+}
+
+.ticket-table thead tr {
+  background-color: #2c3e50;
+}

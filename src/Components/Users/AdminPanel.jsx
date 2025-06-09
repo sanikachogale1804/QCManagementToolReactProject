@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getTickets } from '../Services/ticketService';
+import '../CSS/AdminPanel.css'; // Import the CSS file
 
 function AdminPanel() {
   const [tickets, setTickets] = useState([]);
@@ -12,13 +13,10 @@ function AdminPanel() {
         if (data._embedded && data._embedded.ticketCreations) {
           const ticketData = data._embedded.ticketCreations;
           setTickets(sortTickets(ticketData, sortOrder));
-          console.log('✅ Tickets loaded:', ticketData);
         } else {
-          console.warn('⚠️ No tickets found in response:', data);
           setTickets([]);
         }
       } catch (error) {
-        console.error('❌ Error fetching tickets:', error);
         setTickets([]);
       }
     };
@@ -41,13 +39,11 @@ function AdminPanel() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="admin-panel-container">
       <h2>Admin Panel - Ticket List</h2>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label htmlFor="sortOrder" style={{ marginRight: '10px' }}>
-          Sort by Site ID:
-        </label>
+      <div className="sort-container">
+        <label htmlFor="sortOrder">Sort by Site ID:</label>
         <select id="sortOrder" value={sortOrder} onChange={handleSortChange}>
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
@@ -57,8 +53,8 @@ function AdminPanel() {
       {tickets.length === 0 ? (
         <p>No tickets found.</p>
       ) : (
-        <table border="1" cellPadding="8" cellSpacing="0" style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ backgroundColor: '#f0f0f0' }}>
+        <table className="ticket-table">
+          <thead>
             <tr>
               <th>Ticket ID</th>
               <th>IASSP Name</th>
@@ -89,7 +85,7 @@ function AdminPanel() {
             </tr>
           </thead>
           <tbody>
-            {tickets.map(ticket => (
+            {tickets.map((ticket) => (
               <tr key={ticket.id}>
                 <td>{ticket.id}</td>
                 <td>{ticket.iasspName}</td>
@@ -117,7 +113,7 @@ function AdminPanel() {
                 <td>{ticket.finalRemarks}</td>
                 <td>{ticket.additionalImages}</td>
                 <td>
-                    <button>Validate</button>
+                  <button className="validate-button">Validate</button>
                 </td>
               </tr>
             ))}

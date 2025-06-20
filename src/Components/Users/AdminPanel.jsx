@@ -38,6 +38,33 @@ function AdminPanel() {
     setTickets(sortTickets(tickets, newOrder));
   };
 
+  // ✅ Extract ticket ID from _links.self.href
+  const extractTicketId = (ticket) => {
+    const selfHref = ticket._links?.self?.href;
+    if (selfHref) {
+      const parts = selfHref.split('/');
+      return parts[parts.length - 1];
+    }
+    return 'N/A';
+  };
+
+  // Helper function to render "View Image" button
+  const renderImageButton = (ticketId, fieldName, fieldValue) => {
+    return fieldValue ? (
+      <button
+        className="view-image-button"
+        onClick={() =>
+          window.open(`http://localhost:8080/ticketCreation/${ticketId}/${fieldName}`, '_blank')
+        }
+      >
+        View Image
+      </button>
+    ) : (
+      'N/A'
+    );
+  };
+
+
   return (
     <div className="admin-panel-container">
       <h2>Admin Panel - Ticket List</h2>
@@ -74,8 +101,8 @@ function AdminPanel() {
               <th>Live View Quality</th>
               <th>Video Config Image</th>
               <th>Resolution</th>
-              <th>FTP Seetings Image</th>
-              <th>NTP Seetings Image</th>
+              <th>FTP Settings Image</th>
+              <th>NTP Settings Image</th>
               <th>SD Card Storage Percentage</th>
               <th>PlayBack Screenshot</th>
               <th>Final Status</th>
@@ -85,38 +112,41 @@ function AdminPanel() {
             </tr>
           </thead>
           <tbody>
-            {tickets.map((ticket) => (
-              <tr key={ticket.id}>
-                <td>{ticket.id}</td>
-                <td>{ticket.iasspName}</td>
-                <td>{ticket.siteId}</td>
-                <td>{ticket.cameraId1}</td>
-                <td>{ticket.cameraId2}</td>
-                <td>{ticket.ipAddress1}</td>
-                <td>{ticket.ipAddress2}</td>
-                <td>{ticket.simIccid}</td>
-                <td>{ticket.simCarrier}</td>
-                <td>{ticket.simStatus}</td>
-                <td>{ticket.pingResponseTime}</td>
-                <td>{ticket.networkImage}</td>
-                <td>{ticket.apnConfigImage}</td>
-                <td>{ticket.apnConfigStatus}</td>
-                <td>{ticket.liveViewImage}</td>
-                <td>{ticket.liveViewQuality}</td>
-                <td>{ticket.videoConfigImage}</td>
-                <td>{ticket.resolution}</td>
-                <td>{ticket.ftpSettingsImage}</td>
-                <td>{ticket.ntpSettingsImage}</td>
-                <td>{ticket.sdCardStoragePercentage}</td>
-                <td>{ticket.playbackScreenshot}</td>
-                <td>{ticket.finalStatus}</td>
-                <td>{ticket.finalRemarks}</td>
-                <td>{ticket.additionalImages}</td>
-                <td>
-                  <button className="validate-button">Validate</button>
-                </td>
-              </tr>
-            ))}
+            {tickets.map((ticket) => {
+              const ticketId = extractTicketId(ticket);
+              return (
+                <tr key={ticketId}>
+                  <td>{ticketId}</td>
+                  <td>{ticket.iasspName}</td>
+                  <td>{ticket.siteId}</td>
+                  <td>{ticket.cameraId1}</td>
+                  <td>{ticket.cameraId2}</td>
+                  <td>{ticket.ipAddress1}</td>
+                  <td>{ticket.ipAddress2}</td>
+                  <td>{ticket.simIccid}</td>
+                  <td>{ticket.simCarrier}</td>
+                  <td>{ticket.simStatus}</td>
+                  <td>{ticket.pingResponseTime}</td>
+                  <td>{renderImageButton(ticketId, 'image', ticket.networkImage)}</td>
+                  <td>{renderImageButton(ticketId, 'apnConfigImage', ticket.apnConfigImage)}</td>
+                  <td>{ticket.apnConfigStatus}</td>
+                  <td>{renderImageButton(ticketId, 'liveViewImage', ticket.liveViewImage)}</td>
+                  <td>{ticket.liveViewQuality}</td>
+                  <td>{renderImageButton(ticketId, 'videoConfigImage', ticket.videoConfigImage)}</td>
+                  <td>{ticket.resolution}</td>
+                  <td>{renderImageButton(ticketId, 'ftpSettingsImage', ticket.ftpSettingsImage)}</td>
+                  <td>{renderImageButton(ticketId, 'ntpSettingsImage', ticket.ntpSettingsImage)}</td>
+                  <td>{ticket.sdCardStoragePercentage}</td>
+                  <td>{renderImageButton(ticketId, 'playbackScreenshotImage', ticket.playbackScreenshot)}</td>
+                  <td>{ticket.finalStatus}</td>
+                  <td>{ticket.finalRemarks}</td>
+                  <td>{renderImageButton(ticketId, 'additionalImage', ticket.additionalImages)}</td>
+                  <td>
+                    <button className="validate-button">Validate</button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}
